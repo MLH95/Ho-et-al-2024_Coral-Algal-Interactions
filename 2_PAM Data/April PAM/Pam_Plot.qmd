@@ -1,0 +1,96 @@
+---
+title: "Pam Plot"
+author: "Man Lim Ho"
+format: html
+---
+
+Installation of required packages:
+
+```{r}
+install.packages('ggplot2')
+install.packages('dplyr')
+install.packages('tidyr')
+install.packages('multcomp')
+install.packages('reshape2')
+install.packages("emmeans")
+install.packages("ggpubr")
+install.packages("ggsignif")
+```
+
+Run required packages:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(multcomp)
+library(reshape2)
+library(emmeans)
+library(forcats)
+library(ggpubr)
+library(ggsignif)
+library(car)
+```
+
+Read data
+
+```{r}
+disPAM <- read.csv("April2023_removed.csv", header = TRUE)
+str(disPAM)
+
+```
+
+```{r}
+#pdf("APR_2023_PAM_Plot_bylocation.pdf")
+disPAM$location <- fct_rev(disPAM$location)
+```
+
+```{r}
+#pdf("APR_2023_PAM_Plot_bylocation.pdf")
+Multiplot2 <- ggplot(disPAM,aes(x = location, y = avg, fill = interaction)) +
+  geom_boxplot() +
+  theme(panel.background = element_rect(fill= 'white'),
+        axis.text = element_text(size=24),
+        axis.title.y = element_text(margin = margin(t=0, r=20, b=0, l=0), size = 18),
+        axis.title.x = element_text(margin = margin(t=20, r=0, b=0, l=0), size = 18),
+        axis.text.y = element_text(size=12),
+        axis.text.x = element_text(size=12),
+        axis.line.y = element_line(colour = 'black', size=0.5),
+        axis.line.x = element_line(colour = 'black', size=0.5),
+        plot.title = element_text(size=24)) +
+  ylim(0.3,0.8) +
+  labs(x = "Locations", y = "Photosystem ii Yield") +
+  guides(fill = guide_legend(title = "CAI Pairs"))
+Multiplot2 + scale_fill_manual(values = c("#3bff89",
+                                       "#56bf92",
+                                       "#0f6652",
+                                       "#26afd1",
+                                       "#0061c2"))
+
+ggsave("APR_2023_PAM_Plot_bylocation_V2.pdf", width = 8, height = 6, units = "in")
+
+```
+
+```{r}
+mod1 <- lm(avg ~ location, data = disPAM)
+
+pdf("Verification.pdf", width = 8, height = 6)
+plot(mod1)
+dev.off()
+
+
+summary(mod1)
+#Residual standard error: 0.04269 on 49 degrees of freedom
+#  (8 observations deleted due to missingness)
+#Multiple R-squared:  0.3104,	Adjusted R-squared:  0.2823 
+#F-statistic: 11.03 on 2 and 49 DF,  p-value: 0.000111
+
+
+emmeans(mod1, pairwise ~ location)
+#$contrasts
+# contrast  estimate     SE df t.ratio p.value
+# SBW - SBE   0.0244 0.0135 49   1.805  0.1785
+# SBW - EB    0.0731 0.0156 49   4.690  0.0001
+# SBE - EB    0.0487 0.0156 49   3.127  0.0082
+
+```

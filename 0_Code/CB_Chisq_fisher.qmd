@@ -1,0 +1,102 @@
+---
+title: "Cemetery Bay Chi squared/Fisher's exact test"
+format: html
+---
+
+```{r}
+library(ggplot2)
+library(tidyr)
+```
+
+```{r}
+CBRT <- data.frame(
+  "RT" = c(26, 0.25),
+  "Not_RT" = c(64, 84.75),
+  row.names = c("April", "December"),
+  stringsAsFactors = FALSE
+)
+colnames(CBRT) <- c("RT", "Not_RT")
+
+CBRT
+
+CBDict <- data.frame(
+  "Dictyota" = c(11.25, 6),
+  "Not_Dictyota" = c(78.75, 79),
+  row.names = c("April", "December")#,
+  #stringAsFactors = FALSE
+)
+#colnames(CBDict) <- C("Dictyota", "Not_Dictyota")
+
+CBBT <- data.frame(
+  "Lyngbya" = c(0, 0.5),
+  "Not Lyngbya" = c(90, 84.5),
+  row.names = c("April", "December")#,
+  #stringAsFactors = FALSE
+)
+#colnames(CBBT) <- C("Lyngbya", "Not Lyngbya")
+
+CBC <- data.frame(
+  "Coral" = c(19.5, 18.25),
+  "Not_Coral" = c(70.5, 66.75),
+  row.names = c("April", "December")#,
+  #stringAsFactors = FALSE
+)
+#colnames(CBC) <- C("Coral", "Not_Coral")
+
+CBCaulerpa <- data.frame(
+  "Caulerpa" = c(1.25, 24.25),
+  "Not Caulerpa" = c(88.75, 60.75),
+  row.names = c("April", "December")#,
+  #stringAsFactors = FALSE
+)
+#colnames(CBCaulerpa) <- C("Caulerpa", "Not_Caulerpa")
+```
+
+```{r}
+mosaicplot(CBRT,
+  main = "Mosaic plot",
+  color = TRUE
+)
+```
+
+```{r}
+chisq.test(CBRT)$expected
+CBRTChi <- chisq.test(CBRT)
+CBRTChi
+#X-squared = 25.836, df = 1, p-value = 3.716e-07
+#Significant
+CBRTChi$statistic
+CBRTChi$p.value
+
+chisq.test(CBDict)$expected
+CBDictChi <- chisq.test(CBDict)
+CBDictChi
+#X-squared = 0.90855, df = 1, p-value = 0.3405
+
+chisq.test(CBBT)$expected
+#Cannot use chi squared test
+CBBTfish <- fisher.test(CBBT)
+CBBTfish
+# p-value = 1
+# No significance
+
+chisq.test(CBC)$expected
+CBCChi <- chisq.test(CBC)
+CBCChi
+#X-squared = 3.6815e-31, df = 1, p-value = 1
+#No significance
+
+chisq.test(CBCaulerpa)$expected
+CBCaulerpaChi <- chisq.test(CBCaulerpa)
+CBCaulerpaChi
+#X-squared = 23.733, df = 1, p-value = 1.107e-06
+#Significant
+```
+
+Multiple test P-value adjustment Bonferroni
+```{r}
+p = c(3.716e-07, 0.3405, 1, 1, 1.107e-06)
+adjp <- p.adjust(p, method = "bonferroni", n = length(p))
+adjp
+# 1.858e-06 1.000e+00 1.000e+00 1.000e+00 5.535e-06
+```

@@ -1,0 +1,65 @@
+---
+title: "CAI Plots"
+format: html
+---
+
+
+```{r}
+library(ggplot2)
+library(viridis)
+```
+
+```{r}
+CAI <- read.csv("CAI_percentage.csv")
+CAI
+```
+
+```{r}
+df <- data.frame(
+  Row = c("SBW_APR", "SBW_DEC", "SBE_APR", "SBE_DEC", "EB_APR", "EB_DEC", "CB_APR", "CB_DEC"),
+  RT = c(44.19014085, 1.98019802, 45.65217391, 2.34375, 46.32352941, 2.232142857, 28.88888889, 0.294117647),
+  Dictyota = c(13.20422535, 12.37623762, 19.02173913, 13.28125, 11.02941176, 23.21428571, 12.5, 7.058823529),
+  BT = c(0.528169014, 30.1980198, 0.543478261, 24.21875, 0, 11.60714286, 0, 0.588235294),
+  Caulerpa = c(0.176056338, 5.940594059, 1.086956522, 17.578125, 0, 8.928571429, 1.388888889, 28.52941176),
+  C = c(21.47887324, 12.12871287, 9.239130435, 11.71875, 32.35294118, 18.30357143, 21.66666667, 21.47058824)
+)
+
+# Reshape the data for ggplot2
+df_long <- tidyr::gather(df, key = "Category", value = "Value", -Row)
+
+desired_order <- c("SBW_APR", "SBW_DEC", "SBE_APR", "SBE_DEC", "EB_APR", "EB_DEC", "CB_APR", "CB_DEC")
+
+# Convert the 'Row' variable to a factor with the desired order
+df_long$Row <- factor(df_long$Row, levels = desired_order)
+df_long$Subgroup <- c(1, 1, 2, 2, 3, 3, 4, 4)
+facet_order <- c("RT", "Dictyota", "BT", "Caulerpa", "C")
+
+custom_limits <- list(
+  RT = c(0, 50),
+  Dictyota = c(0, 50),
+  BT = c(0, 50),
+  Caulerpa = c(0, 50),
+  C = c(0, 50)
+)
+
+df_long$Category <- factor(df_long$Category, levels = facet_order)
+# Create the paired bar plot
+ggplot(df_long, aes(x = Row, y = Value, fill = Row, group = Subgroup)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8)) +
+  theme(panel.background = element_rect(fill= 'white'),
+        axis.text = element_text(size=24),
+        axis.title.y = element_text(margin = margin(t=0, r=20, b=0, l=0), size = 18),
+        axis.title.x = element_text(margin = margin(t=20, r=0, b=0, l=0), size = 18),
+        axis.text.y = element_text(size=18),
+        axis.text.x = element_text(size=18, angle = 45, hjust = 1),
+        strip.text = element_text(size = 18),
+        axis.line.y = element_line(colour = 'black', size=0.5),
+        axis.line.x = element_line(colour = 'black', size=0.5),
+        plot.title = element_text(size=24))+
+  theme(legend.position = "none") +
+  facet_wrap(~Category, scales = "free_y", ncol = 1) +
+  labs(y = "Percentage of Coverage") #+
+  #coord_cartesian(ylim = unlist(custom_limits))
+
+ggsave("CAIPaired1.pdf", width = 8, height = 10, units = "in")
+```

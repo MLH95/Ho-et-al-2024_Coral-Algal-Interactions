@@ -1,0 +1,156 @@
+---
+title: "Cemetery Bay Chi squared/Fisher's exact test"
+format: html
+---
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(rcompanion)
+```
+
+```{r}
+RT1 <- data.frame(
+  "RT" = c(62.75, 21),
+  "Not_RT" = c(79.25, 25),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(RT1)$expected
+RT1Chi <- chisq.test(RT1)
+RT1Chi
+# X-squared = 7.4171e-06, df = 1, p-value = 0.9978
+RT2 <- data.frame(
+  "RT" = c(62.75, 15.75),
+  "Not_RT" = c(79.25, 18.25),
+  row.names = c("SBW", "EB")
+)
+chisq.test(RT2)$expected
+RT2Chi <- chisq.test(RT2)
+RT2Chi
+# X-squared = 0.0010717, df = 1, p-value = 0.9739
+RT3 <- data.frame(
+  "RT" = c(62.75, 26),
+  "Not_RT" = c(79.25, 64),
+  row.names = c("SBW", "CB")
+)
+chisq.test(RT3)$expected
+RT3Chi <- chisq.test(RT3)
+RT3Chi
+# X-squared = 4.8316, df = 1, p-value = 0.02794
+RT4 <- data.frame(
+  "RT" = c(21, 15.75),
+  "Not_RT" = c(25, 18.25),
+  row.names = c("SBE", "EB")
+)
+chisq.test(RT4)$expected
+RT4Chi <- chisq.test(RT4)
+RT4Chi
+# X-squared = 4.4788e-31, df = 1, p-value = 1
+RT5 <- data.frame(
+  "RT" = c(21, 26),
+  "Not_RT" = c(25, 64),
+  row.names = c("SBE", "CB")
+)
+chisq.test(RT5)$expected
+RT5Chi <- chisq.test(RT5)
+RT5Chi
+# X-squared = 3.0775, df = 1, p-value = 0.07938
+RT6 <- data.frame(
+  "RT" = c(15.75, 26),
+  "Not_RT" = c(18.25, 64),
+  row.names = c("EB", "CB")
+)
+chisq.test(RT6)$expected
+RT6Chi <- chisq.test(RT6)
+RT6Chi
+# X-squared = 2.6234, df = 1, p-value = 0.1053
+pRT = c(0.9978, 0.9739, 0.02794, 1, 0.07938, 0.1053)
+adjRTp <- p.adjust(pRT, method = "bonferroni", n = length(pRT))
+adjRTp
+# 1.00000 1.00000 0.16764 1.00000 0.47628 0.63180
+
+
+```
+```{r}
+Dic1 <- data.frame(
+  "Dic" = c(18.75, 8.75),
+  "Not_Dic" = c(123.25, 37.25),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(Dic1)$expected
+Dic1Chi <- chisq.test(Dic1)
+Dic1Chi
+# X-squared = 0.53338, df = 1, p-value = 0.4652
+Dic2 <- data.frame(
+  "Dic" = c(18.75, 3.75),
+  "Not_Dic" = c(123.25, 30.25),
+  row.names = c("SBW", "EB")
+)
+chisq.test(Dic2)$expected
+Dic2fish <- fisher.test(Dic2)
+Dic2fish
+# p-value = 1
+```
+
+```{r}
+Cor1 <- data.frame(
+  "Cor" = c(30.5, 4.25),
+  "Not_Cor" = c(111.5, 41.75),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(Cor1)$expected
+Cor1Chi <- chisq.test(Cor1)
+Cor1Chi
+# X-squared = 2.69, df = 1, p-value = 0.101
+Cor2 <- data.frame(
+  "Cor" = c(30.5, 11),
+  "Not_Cor" = c(111.5, 23),
+  row.names = c("SBW", "EB")
+)
+chisq.test(Cor2)$expected
+Cor2Chi <- chisq.test(Cor2)
+Cor2Chi
+# X-squared = 1.2472, df = 1, p-value = 0.2641
+Cor3 <- data.frame(
+  "Cor" = c(30.5, 19.5),
+  "Not_Cor" = c(111.5, 70.5),
+  row.names = c("SBW", "CB")
+)
+chisq.test(Cor3)$expected
+Cor3Chi <- chisq.test(Cor3)
+Cor3Chi
+# X-squared = 1.0632e-30, df = 1, p-value = 1
+Cor4 <- data.frame(
+  "Cor" = c(4.25, 11),
+  "Not_Cor" = c(41.75, 23),
+  row.names = c("SBE", "EB")
+)
+chisq.test(Cor4)$expected
+Cor4Chi <- chisq.test(Cor4)
+Cor4Chi
+# X-squared = 5.3543, df = 1, p-value = 0.02067
+Cor5 <- data.frame(
+  "Cor" = c(4.25, 19.5),
+  "Not_Cor" = c(41.75, 70.5),
+  row.names = c("SBE", "CB")
+)
+chisq.test(Cor5)$expected
+Cor5Chi <- chisq.test(Cor5)
+Cor5Chi
+# X-squared = 2.4566, df = 1, p-value = 0.117
+Cor6 <- data.frame(
+  "Cor" = c(11, 19.5),
+  "Not_Cor" = c(23, 70.5),
+  row.names = c("EB", "CB")
+)
+chisq.test(Cor6)$expected
+Cor6Chi <- chisq.test(Cor6)
+Cor6Chi
+# X-squared = 0.99789, df = 1, p-value = 0.3178
+
+pC = c(0.101, 0.2641, 1, 0.02067, 0.117, 0.3178)
+adjCp <- p.adjust(pC, method = "bonferroni", n = length(pC))
+adjCp
+# 0.60600 1.00000 1.00000 0.12402 0.70200 1.00000
+```
+Multiple test P-value adjustment Bonferroni

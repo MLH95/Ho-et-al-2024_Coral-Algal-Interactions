@@ -1,0 +1,112 @@
+---
+title: "Pam Plot"
+author: "Man Lim Ho"
+format: html
+---
+
+Installation of required packages:
+
+```{r}
+install.packages('ggplot2')
+install.packages('dplyr')
+install.packages('tidyr')
+install.packages('multcomp')
+install.packages('reshape2')
+install.packages("emmeans")
+install.packages("ggpubr")
+install.packages("ggsignif")
+```
+
+Run required packages:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(multcomp)
+library(reshape2)
+library(emmeans)
+library(forcats)
+library(ggpubr)
+library(ggsignif)
+```
+
+Read data
+
+```{r}
+disPAM <- read.csv(file= "December2023.csv", header = TRUE)
+str(disPAM)
+```
+
+Summary Plots:
+```{r}
+disPAM$location <- fct_rev(disPAM$location)
+```
+
+```{r}
+#pdf("DEC_2023_PAM_Plot_bylocation.pdf")
+
+Multiplot2 <- ggplot(disPAM,aes(x = location, y = avg, fill = interaction)) +
+  geom_boxplot()+
+  theme(panel.background = element_rect(fill= 'white'),
+        axis.text = element_text(size=24),
+        axis.title.y = element_text(margin = margin(t=0, r=20, b=0, l=0), size = 18),
+        axis.title.x = element_text(margin = margin(t=20, r=0, b=0, l=0), size = 18),
+        axis.text.y = element_text(size=12),
+        axis.text.x = element_text(size=12),
+        axis.line.y = element_line(colour = 'black', size=0.5),
+        axis.line.x = element_line(colour = 'black', size=0.5),
+        plot.title = element_text(size=24)) +
+  ylim(0.3,0.8) +
+  labs(x = "Locations", y = "Photosystem ii Yield") +
+  guides(fill = guide_legend(title = "CAI Pairs"))
+Multiplot2 + scale_fill_manual(values = c("#3bff89",
+                                       "#56bf92",
+                                       "#0f6652",
+                                       "#26afd1",
+                                       "#0061c2"))
+ggsave("DEC_2023_PAM_Plot_bylocation_V2.pdf", width = 8, height = 6, units = "in")
+```
+
+```{r}
+mod1 <- lm(avg ~ interaction * location, data = disPAM)
+
+pdf("Verification.pdf", width = 8, height = 6)
+plot(mod1)
+dev.off()
+
+summary(mod1)
+#Residual standard error: 0.03678 on 45 degrees of freedom
+#Multiple R-squared:  0.6986,	Adjusted R-squared:  0.6048 
+#F-statistic: 7.449 on 14 and 45 DF,  p-value: 1.056e-07
+
+anova(mod1) #Significance in difference between locations
+#                     Df   Sum Sq  Mean Sq F value    Pr(>F)    
+#interaction           4 0.013357 0.003339  2.4684   0.05818 .  
+#location              2 0.069851 0.034925 25.8184 3.401e-08 ***
+#interaction:location  8 0.057856 0.007232  5.3462 9.624e-05 ***
+#Residuals            45 0.060873 0.001353
+
+# post hoc test 
+# running emmeans()
+emmeans(mod1, pairwise ~ interaction*location)
+# C SBW - C EB    -0.112583 0.026 45  -4.329  0.0063
+# C SBW - FG EB   -0.112750 0.026 45  -4.335  0.0062
+# BT SBE - C SBE   0.119417 0.026 45   4.592  0.0029    ### SIGNIFICANT
+# BT SBE - SG SBE  0.137083 0.026 45   5.271  0.0003    ### SIGNIFICANT
+# C SBE - C EB    -0.145750 0.026 45  -5.604  0.0001
+# C SBE - FG EB   -0.145917 0.026 45  -5.611  0.0001
+# C SBE - SG EB   -0.122083 0.026 45  -4.694  0.0021
+# RC SBE - C EB   -0.110333 0.026 45  -4.242  0.0082
+# RC SBE - FG EB  -0.110500 0.026 45  -4.249  0.0080
+# SG SBE - BT EB  -0.119917 0.026 45  -4.611  0.0027
+# SG SBE - C EB   -0.163417 0.026 45  -6.284  <.0001
+# SG SBE - FG EB  -0.163583 0.026 45  -6.290  <.0001
+# SG SBE - SG EB  -0.139750 0.026 45  -5.374  0.0002
+
+emmeans(mod1, pairwise ~ location)
+# contrast  estimate     SE df t.ratio p.value
+# SBW - SBE   0.0146 0.0116 45   1.255  0.4276
+# SBW - EB   -0.0640 0.0116 45  -5.500  <.0001
+# SBE - EB   -0.0786 0.0116 45  -6.755  <.0001
+```

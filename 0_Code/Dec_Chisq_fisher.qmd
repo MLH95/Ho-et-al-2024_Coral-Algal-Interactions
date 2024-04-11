@@ -1,0 +1,254 @@
+---
+title: "Cemetery Bay Chi squared/Fisher's exact test"
+format: html
+---
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(rcompanion)
+```
+
+```{r}
+Dic1 <- data.frame(
+  "Dic" = c(12.5, 8.5),
+  "Not_Dic" = c(88.5, 55.5),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(Dic1)$expected
+Dic1Chi <- chisq.test(Dic1)
+Dic1Chi
+# X-squared = 3.1042e-30, df = 1, p-value = 1
+Dic2 <- data.frame(
+  "Dic" = c(12.5, 13),
+  "Not_Dic" = c(88.5, 43),
+  row.names = c("SBW", "EB")
+)
+chisq.test(Dic2)$expected
+Dic2Chi <- chisq.test(Dic2)
+Dic2Chi
+# X-squared = 2.3649, df = 1, p-value = 0.1241
+Dic3 <- data.frame(
+  "Dic" = c(12.5, 5),
+  "Not_Dic" = c(88.5, 79),
+  row.names = c("SBW", "CB")
+)
+chisq.test(Dic3)$expected
+Dic3Chi <- chisq.test(Dic3)
+Dic3Chi
+# X-squared = 1.5232, df = 1, p-value = 0.2171
+Dic4 <- data.frame(
+  "Dic" = c(8.5, 13),
+  "Not_Dic" = c(55.5,43),
+  row.names = c("SBE", "EB")
+)
+chisq.test(Dic4)$expected
+Dic4Chi <- chisq.test(Dic4)
+Dic4Chi
+# X-squared = 1.3852, df = 1, p-value = 0.2392
+Dic5 <- data.frame(
+  "Dic" = c(8.5, 5),
+  "Not_Dic" = c(55.5, 79),
+  row.names = c("SBE", "CB")
+)
+chisq.test(Dic5)$expected
+Dic5Chi <- chisq.test(Dic5)
+Dic5Chi
+# X-squared = 1.5526, df = 1, p-value = 0.2128
+
+Dic6 <- data.frame(
+  "Dic" = c(13, 5),
+  "Not_Dic" = c(43, 79),
+  row.names = c("EB", "CB")
+)
+chisq.test(Dic6)$expected
+Dic6Chi <- chisq.test(Dic6)
+Dic6Chi
+# X-squared = 7.4617, df = 1, p-value = 0.006303
+pDic = c(1, 0.1241, 0.2171, 0.2392, 0.2128, 0.006303)
+adjDicp <- p.adjust(pDic, method = "bonferroni", n = length(pDic))
+adjDicp
+# 1.000000 0.744600 1.000000 1.000000 1.000000 0.037818
+```
+```{r}
+BT1 <- data.frame(
+  "BT" = c(30.5, 15.5),
+  "Not_BT" = c(70.5, 48.5),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(BT1)$expected
+BT1Chi <- chisq.test(BT1)
+BT1Chi
+# X-squared = 0.43095, df = 1, p-value = 0.5115
+BT2 <- data.frame(
+  "BT" = c(30.5, 6.5),
+  "Not_BT" = c(70.5, 49.5),
+  row.names = c("SBW", "EB")
+)
+chisq.test(BT2)$expected
+BT2Chi <- chisq.test(BT2)
+BT2Chi
+# X-squared = 5.9188, df = 1, p-value = 0.01498
+BT3 <- data.frame(
+  "BT" = c(30.5, 0.5),
+  "Not_BT" = c(70.5, 84.5),
+  row.names = c("SBW", "CB")
+)
+chisq.test(BT3)$expected
+BT3Chi <- chisq.test(BT3)
+BT3Chi
+# X-squared = 27.043, df = 1, p-value = 1.99e-07
+BT4 <- data.frame(
+  "BT" = c(15.5, 6.5),
+  "Not_BT" = c(48.5, 49.5),
+  row.names = c("SBE", "EB")
+)
+chisq.test(BT4)$expected
+BT4Chi <- chisq.test(BT4)
+BT4Chi
+# X-squared = 2.3864, df = 1, p-value = 0.1224
+BT5 <- data.frame(
+  "BT" = c(15.5, 0.5),
+  "Not_BT" = c(48.5, 84.5),
+  row.names = c("SBE", "CB")
+)
+chisq.test(BT5)$expected
+BT5Chi <- chisq.test(BT5)
+BT5Chi
+# X-squared = 18.876, df = 1, p-value = 1.395e-05
+BT6 <- data.frame(
+  "BT" = c(6.5, 0.5),
+  "Not_BT" = c(49.5, 84.5),
+  row.names = c("EB", "CB")
+)
+chisq.test(BT6)$expected
+BT6Chi <- fisher.test(BT6)
+BT6Chi
+# p-value = 0.003461
+pBT = c(0.5115, 0.01498, 1.99e-07, 0.1224, 1.395e-05, 0.003461)
+adjBTp <- p.adjust(pBT, method = "bonferroni", n = length(pBT))
+adjBTp
+# 1.0000e+00 8.9880e-02 1.1940e-06 7.3440e-01 8.3700e-05 2.0766e-02
+```
+
+```{r}
+SG1 <- data.frame(
+  "SG" = c(6, 11.25),
+  "Not_SG" = c(95, 52.75),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(SG1)$expected
+SG1Chi <- chisq.test(SG1)
+SG1Chi
+# X-squared = 4.4925, df = 1, p-value = 0.03404
+SG2 <- data.frame(
+  "SG" = c(6, 5),
+  "Not_SG" = c(95, 51),
+  row.names = c("SBW", "EB")
+)
+chisq.test(SG2)$expected
+SG2Chi <- fisher.test(SG2)
+SG2Chi
+# p-value = 0.5234
+SG3 <- data.frame(
+  "SG" = c(6, 24.25),
+  "Not_SG" = c(95, 60.75),
+  row.names = c("SBW", "CB")
+)
+chisq.test(SG3)$expected
+SG3Chi <- chisq.test(SG3)
+SG3Chi
+# X-squared = 15.675, df = 1, p-value = 7.522e-05
+SG4 <- data.frame(
+  "SG" = c(11.25, 5),
+  "Not_SG" = c(52.75, 51),
+  row.names = c("SBE", "EB")
+)
+chisq.test(SG4)$expected
+SG4Chi <- chisq.test(SG4)
+SG4Chi
+# X-squared = 1.2412, df = 1, p-value = 0.2652
+SG5 <- data.frame(
+  "SG" = c(11.25, 24.25),
+  "Not_SG" = c(52.75, 60.75),
+  row.names = c("SBE", "CB")
+)
+chisq.test(SG5)$expected
+SG5Chi <- chisq.test(SG5)
+SG5Chi
+# X-squared = 1.847, df = 1, p-value = 0.1741
+SG6 <- data.frame(
+  "SG" = c(5, 24.25),
+  "Not_SG" = c(51, 60.75),
+  row.names = c("EB", "CB")
+)
+chisq.test(SG6)$expected
+SG6Chi <- chisq.test(SG6)
+SG6Chi
+# X-squared = 6.7415, df = 1, p-value = 0.00942
+pSG = c(0.03404, 0.5234, 7.522e-05, 0.2652, 0.1741, 0.00942)
+adjSGp <- p.adjust(pSG, method = "bonferroni", n = length(pSG))
+adjSGp
+# 0.20424000 1.00000000 0.00045132 1.00000000 1.00000000 0.05652000
+```
+
+```{r}
+C1 <- data.frame(
+  "C" = c(12.25, 7.5),
+  "Not_C" = c(88.75, 56.5),
+  row.names = c("SBW", "SBE")
+)
+chisq.test(C1)$expected
+C1Chi <- chisq.test(C1)
+C1Chi
+# X-squared = 3.5878e-30, df = 1, p-value = 1
+C2 <- data.frame(
+  "C" = c(12.25, 10.25),
+  "Not_C" = c(88.75, 45.75),
+  row.names = c("SBW", "EB")
+)
+chisq.test(C2)$expected
+C2Chi <- chisq.test(C2)
+C2Chi
+# X-squared = 0.67239, df = 1, p-value = 0.4122
+C3 <- data.frame(
+  "C" = c(12.25, 18.25),
+  "Not_C" = c(88.75, 66.75),
+  row.names = c("SBW", "CB")
+)
+chisq.test(C3)$expected
+C3Chi <- chisq.test(C3)
+C3Chi
+# X-squared = 2.2963, df = 1, p-value = 0.1297
+C4 <- data.frame(
+  "C" = c(7.5, 10.25),
+  "Not_C" = c(56.5, 45.75),
+  row.names = c("SBE", "EB")
+)
+chisq.test(C4)$expected
+C4Chi <- chisq.test(C4)
+C4Chi
+# X-squared = 0.57145, df = 1, p-value = 0.4497
+C5 <- data.frame(
+  "C" = c(7.5, 18.25),
+  "Not_C" = c(56.5, 66.75),
+  row.names = c("SBE", "CB")
+)
+chisq.test(C5)$expected
+C5Chi <- chisq.test(C5)
+C5Chi
+#X-squared = 1.7945, df = 1, p-value = 0.1804
+C6 <- data.frame(
+  "C" = c(10.25, 18.25),
+  "Not_C" = c(45.75, 66.75),
+  row.names = c("EB", "CB")
+)
+chisq.test(C6)$expected
+C6Chi <- chisq.test(C6)
+C6Chi
+# X-squared = 0.059498, df = 1, p-value = 0.8073
+pC = c(1, 0.4122, 0.1297, 0.4497, 0.1804, 0.8073)
+adjCp <- p.adjust(pC, method = "bonferroni", n = length(pC))
+adjCp
+# 1.0000 1.0000 0.7782 1.0000 1.0000 1.0000
+```
